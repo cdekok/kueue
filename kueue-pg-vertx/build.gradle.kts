@@ -9,4 +9,5 @@ dependencies {
     implementation(libs.kotlinxCoroutines)
     implementation(libs.kotlinxJson)
     implementation(libs.kotlinLogging)
+    implementation(libs.uuidCreator)
 }

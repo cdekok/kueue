@@ -13,6 +13,7 @@ scram = "2.1"
 kotlinLogging = "3.0.4"
 logback = "1.4.5"
 junit = "5.9.2"
+uuidCreator = "5.2.0"
 
 [libraries]
 vertxPg = { module = "io.vertx:vertx-pg-client", version.ref = "vertx" }
@@ -28,6 +29,7 @@ scram = { module = "com.ongres.scram:client", version.ref = "scram" }
 kotlinLogging = { module = "io.github.microutils:kotlin-logging-jvm", version.ref = "kotlinLogging" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref ="logback" }
 junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+uuidCreator = { module = "com.github.f4b6a3:uuid-creator", version.ref = "uuidCreator" }
 
 [plugins]
 versions = { id = "com.github.ben-manes.versions", version.ref = "versionsPlugin" }
