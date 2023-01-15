@@ -1,0 +1,36 @@
+[versions]
+kueue = "0.1.0"
+detekt = "1.22.0"
+kotlin = "1.8.0"
+vertx = "4.3.7"
+versionsPlugin = "0.44.0"
+kotlinxSerialization = "1.8.0"
+kotlinxJson = "1.4.1"
+kotlinxCoroutines = "1.6.4"
+testContainers = "1.17.6"
+clikt = "3.5.1"
+scram = "2.1"
+kotlinLogging = "3.0.4"
+logback = "1.4.5"
+junit = "5.9.2"
+
+[libraries]
+vertxPg = { module = "io.vertx:vertx-pg-client", version.ref = "vertx" }
+vertxCoroutines = { module = "io.vertx:vertx-lang-kotlin-coroutines", version.ref = "vertx" }
+kotlinxCoroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinxJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxJson" }
+kotlinReflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+testContainers = { module = "org.testcontainers:testcontainers", version.ref = "testContainers" }
+testContainersJunit = { module = "org.testcontainers:junit-jupiter", version.ref = "testContainers" }
+testContainersPostgresql = { module = "org.testcontainers:postgresql", version.ref = "testContainers" }
+clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
+scram = { module = "com.ongres.scram:client", version.ref = "scram" }
+kotlinLogging = { module = "io.github.microutils:kotlin-logging-jvm", version.ref = "kotlinLogging" }
+logback = { module = "ch.qos.logback:logback-classic", version.ref ="logback" }
+junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+
+[plugins]
+versions = { id = "com.github.ben-manes.versions", version.ref = "versionsPlugin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization" }

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# current script dir
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+ENV_FILE="${SCRIPT_DIR}/.env"
+
+# read .env
+export $(cat $ENV_FILE | xargs)
+
+./gradlew --quiet ":kueue-example-pg:installDist" && "./kueue-example-pg/build/install/kueue-example-pg/bin/kueue-example-pg" "$@"
