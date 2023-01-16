@@ -1,11 +1,11 @@
 # Kueue
 
 ## tl:dr;
-Kueue is a job queue in Kotlin to offload tasks to be processed in the background
+Kueue is a persistent job queue in Kotlin to offload tasks to be processed in the background
 
 ## Quick start
 
-TO view the full source of the example look in the [example module](/kueue-example-pg/src/main/kotlin/eu/kueue/example)
+To view the full source of the example look in the [example module](/kueue-example-pg/src/main/kotlin/eu/kueue/example)
 
 ### Producer
 
@@ -71,6 +71,11 @@ val listeners = listOf(
     TestListener()
 )
 
+val consumer = PgConsumer(
+    client = pgPool(),
+    serializer = kotlinXSerializer(),
+)
+
 runBlocking {
     consumer.subscribe(
         topic = "records",
@@ -116,12 +121,30 @@ sdk env
 
 Run code formatter with detekt
 
-`./gradlew format`
+```shell
+./gradlew format
+```
 
 Check code formatting
 
-`./gradlew detekt`
+```shell
+./gradlew detekt`
+```
+
+Run all tests
+
+```shell
+./gradlew test
+```
+
+Run all tests & formatting rules
+
+```shell
+./gradlew check
+```
 
 Check for dependency updates
 
-`./gradlew dependencyUpdates`
+```shell
+./gradlew dependencyUpdates`
+```
