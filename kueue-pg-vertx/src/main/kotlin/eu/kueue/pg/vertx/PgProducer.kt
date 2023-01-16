@@ -26,20 +26,24 @@ class PgProducer(
         """.trimIndent()
 
         val created = Instant.now()
-        val id = UuidCreator.getTimeOrdered(
-            created,
-            null,
-            null,
-        )
-
         val data = Tuple.of(
-            id,
+            created.toUUIDv6(),
             topic,
             serializedMessage,
             clazz.qualifiedName,
-            OffsetDateTime.ofInstant(created, ZoneOffset.UTC),
+            created.toOffsetDateTime(),
         )
 
         client.preparedQuery(sql).execute(data).await()
     }
 }
+
+private fun Instant.toUUIDv6(): UUID =
+    UuidCreator.getTimeOrdered(
+        this,
+        null,
+        null,
+    )
+
+private fun Instant.toOffsetDateTime(): OffsetDateTime =
+    OffsetDateTime.ofInstant(this, ZoneOffset.UTC)
