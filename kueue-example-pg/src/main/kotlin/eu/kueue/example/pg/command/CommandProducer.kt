@@ -24,8 +24,6 @@ class CommandProducer : CliktCommand(
     name = "producer",
     help = "Publish test messages"
 ) {
-
-    @Suppress("MagicNumber")
     private val amount: Int by option(help = "Number of messages to add")
         .int()
         .default(10_000)
