@@ -11,12 +11,8 @@ interface EventListener
 data class CallableListener(
     val listener: EventListener,
     val method: KFunction<*>,
+    val firstArgumentType: KClass<*>,
 ) {
-    fun firstArgumentType(): KClass<*> =
-        method.parameters.first {
-            it.kind == KParameter.Kind.VALUE
-        }.type.jvmErasure
-
     fun call(message: Message) {
         method.call(listener, message)
     }
@@ -28,10 +24,16 @@ fun List<EventListener>.eventHandlers() =
             func.annotations.any { annotation ->
                 annotation is EventHandler
             }
-        }.map {
+        }.map { method ->
             CallableListener(
                 listener = listener,
-                method = it
+                method = method,
+                firstArgumentType = method.firstArgumentType()
             )
         }
     }
+
+private fun KFunction<*>.firstArgumentType(): KClass<*> =
+    parameters.first {
+        it.kind == KParameter.Kind.VALUE
+    }.type.jvmErasure

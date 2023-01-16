@@ -71,7 +71,7 @@ class PgConsumer(
         ) { messages ->
             messages.forEach { message ->
                 callables.forEach { callable ->
-                    val type = callable.firstArgumentType()
+                    val type = callable.firstArgumentType
                     if (type == message::class) {
                         callable.call(message)
                     }
