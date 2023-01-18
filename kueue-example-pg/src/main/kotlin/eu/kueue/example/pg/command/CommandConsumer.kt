@@ -28,7 +28,7 @@ class CommandConsumer : CliktCommand(
         logger.info { "start consumer" }
         consumer.subscribe(
             topic = DEFAULT_TOPIC,
-            amount = 10,
+            batchSize = 10,
             listeners = listeners,
         )
     }

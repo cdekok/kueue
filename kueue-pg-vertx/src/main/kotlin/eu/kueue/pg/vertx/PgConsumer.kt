@@ -63,11 +63,11 @@ class PgConsumer(
         }
     }
 
-    override suspend fun subscribe(topic: String, amount: Int, listeners: List<EventListener>) {
+    override suspend fun subscribe(topic: String, batchSize: Int, listeners: List<EventListener>) {
         val callables = listeners.eventHandlers()
         subscribe(
             topic = topic,
-            amount = amount,
+            batchSize = batchSize,
         ) { messages ->
             messages.forEach { message ->
                 callables.forEach { callable ->
