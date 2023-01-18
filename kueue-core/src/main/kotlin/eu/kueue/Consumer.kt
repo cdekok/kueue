@@ -22,7 +22,7 @@ interface Consumer {
 
 suspend inline fun <reified T : Message> Consumer.subscribe(
     topic: String,
-    amount: Int,
+    batchSize: Int,
     noinline callBack: ProcessMessage<T>,
 ) =
-    subscribe(topic, amount, T::class, callBack)
+    subscribe(topic, batchSize, T::class, callBack)
