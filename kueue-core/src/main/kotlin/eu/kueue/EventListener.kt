@@ -8,7 +8,7 @@ import kotlin.reflect.jvm.jvmErasure
 
 interface EventListener
 
-data class CallableListener(
+internal data class CallableListener(
     val listener: EventListener,
     val method: KFunction<*>,
     val firstArgumentType: KClass<*>,
@@ -18,7 +18,7 @@ data class CallableListener(
     }
 }
 
-fun List<EventListener>.eventHandlers() =
+internal fun List<EventListener>.eventHandlers() =
     this.flatMap { listener ->
         listener::class.declaredFunctions.filter { func ->
             func.annotations.any { annotation ->
