@@ -13,7 +13,7 @@ data class CallableListener(
     val method: KFunction<*>,
     val firstArgumentType: KClass<*>,
 ) {
-    fun call(message: Message) {
+    fun processMessage(message: Message) {
         method.call(listener, message)
     }
 }
