@@ -1,6 +1,7 @@
 package eu.kueue.pg.vertx
 
 import eu.kueue.*
+import eu.kueue.retry.TimeoutRetryStrategy
 import io.vertx.kotlin.coroutines.await
 import io.vertx.pgclient.PgPool
 import io.vertx.sqlclient.Row
@@ -22,7 +23,8 @@ class PgConsumer(
     private val client: PgPool,
     private val serializer: MessageSerializer,
     limitedParallelism: Int = 4,
-    private val retryDelay: Duration = 5.seconds,
+    private val pollRetryDelay: Duration = 5.seconds,
+    private val retryStrategy: RetryStrategy<Message> = TimeoutRetryStrategy(),
 ) : Consumer {
 
     @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
@@ -34,7 +36,7 @@ class PgConsumer(
         topic: String,
         amount: Int,
         clazz: KClass<T>,
-        callBack: ProcessMessage<T>,
+        callBack: MessagesProcessor<T>,
     ) {
         if (isActive) {
             logger.trace { "listener is already active" }
@@ -53,8 +55,8 @@ class PgConsumer(
                     }
                     logger.trace { "topic: $topic amount: $amount jobs: $jobs" }
                     if (jobs.isEmpty()) {
-                        logger.trace { "no jobs delay for $retryDelay seconds" }
-                        delay(retryDelay)
+                        logger.trace { "no jobs delay for $pollRetryDelay seconds" }
+                        delay(pollRetryDelay)
                     } else {
                         callBack(jobs)
                     }
@@ -73,7 +75,10 @@ class PgConsumer(
                 callables.forEach { callable ->
                     val type = callable.firstArgumentType
                     if (type == message::class) {
-                        callable.call(message)
+                        retryStrategy.runWithRetry(
+                            message = message,
+                            processMessage = callable::processMessage,
+                        )
                     }
                 }
             }

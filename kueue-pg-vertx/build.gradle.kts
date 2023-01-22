@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     implementation(project(":kueue-core"))
+    implementation(project(":kueue-retry"))
     implementation(libs.vertxCoroutines)
     implementation(libs.vertxPg)
     implementation(libs.kotlinxCoroutines)

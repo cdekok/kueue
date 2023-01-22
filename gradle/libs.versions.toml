@@ -19,6 +19,7 @@ uuidCreator = "5.2.0"
 vertxPg = { module = "io.vertx:vertx-pg-client", version.ref = "vertx" }
 vertxCoroutines = { module = "io.vertx:vertx-lang-kotlin-coroutines", version.ref = "vertx" }
 kotlinxCoroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinxCoroutinesTest = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinxJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxJson" }
 kotlinReflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 testContainers = { module = "org.testcontainers:testcontainers", version.ref = "testContainers" }
