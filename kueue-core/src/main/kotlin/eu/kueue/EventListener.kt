@@ -3,6 +3,7 @@ package eu.kueue
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
+import kotlin.reflect.full.callSuspend
 import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.jvm.jvmErasure
 
@@ -13,8 +14,8 @@ data class CallableListener(
     val method: KFunction<*>,
     val firstArgumentType: KClass<*>,
 ) {
-    fun processMessage(message: Message) {
-        method.call(listener, message)
+    suspend fun processMessage(message: Message) {
+        method.callSuspend(listener, message)
     }
 }
 

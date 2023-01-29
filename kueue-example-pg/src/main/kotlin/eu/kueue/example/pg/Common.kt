@@ -1,8 +1,9 @@
 package eu.kueue.example.pg
 
 import eu.kueue.Message
+import eu.kueue.example.pg.message.IndexRecord
 import eu.kueue.example.pg.message.RecordCreated
-import eu.kueue.example.pg.message.TestMessage
+import eu.kueue.example.pg.message.RecordUpdated
 import eu.kueue.serializer.kotlinx.KotlinxMessageSerializer
 import io.vertx.pgclient.PgConnectOptions
 import io.vertx.pgclient.PgPool
@@ -13,7 +14,8 @@ import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import java.lang.System.getenv
 
-const val DEFAULT_TOPIC = "test"
+const val DEFAULT_TOPIC = "system"
+const val INDEX_TOPIC = "index"
 
 fun pgPool(): PgPool = PgPool.pool(
     PgConnectOptions().apply {
@@ -35,8 +37,9 @@ fun kotlinXSerializer(): KotlinxMessageSerializer =
             classDiscriminator = "type"
             serializersModule = SerializersModule {
                 polymorphic(Message::class) {
-                    subclass(TestMessage::class)
+                    subclass(RecordUpdated::class)
                     subclass(RecordCreated::class)
+                    subclass(IndexRecord::class)
                 }
             }
         }

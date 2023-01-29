@@ -38,7 +38,7 @@ suspend inline fun <T> retryWithTimeOut(
 ) {
     for (i in 0..retries) {
         return try {
-            processor.invoke(message)
+            processor(message)
         } catch (e: Throwable) {
             when {
                 !predicate(e) -> throw e

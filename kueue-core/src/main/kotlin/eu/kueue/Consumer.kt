@@ -8,21 +8,25 @@ interface Consumer {
 
     suspend fun <T : Message> subscribe(
         topic: String,
-        amount: Int,
+        batchSize: Int,
+        listeners: List<EventListener>,
         clazz: KClass<T>,
-        callBack: MessagesProcessor<T>,
     )
 
-    suspend fun subscribe(
-        topic: String,
-        amount: Int,
-        listeners: List<EventListener>,
-    )
+    /**
+     * Start consuming messages
+     */
+    suspend fun start()
+
+    /**
+     * Stop consuming messages
+     */
+    suspend fun stop()
 }
 
 suspend inline fun <reified T : Message> Consumer.subscribe(
     topic: String,
     batchSize: Int,
-    noinline callBack: MessagesProcessor<T>,
+    listeners: List<EventListener>,
 ) =
-    subscribe(topic, batchSize, T::class, callBack)
+    subscribe(topic, batchSize, listeners, T::class)

@@ -6,9 +6,11 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import eu.kueue.Producer
 import eu.kueue.example.pg.DEFAULT_TOPIC
+import eu.kueue.example.pg.INDEX_TOPIC
 import eu.kueue.example.pg.kotlinXSerializer
+import eu.kueue.example.pg.message.IndexRecord
 import eu.kueue.example.pg.message.RecordCreated
-import eu.kueue.example.pg.message.TestMessage
+import eu.kueue.example.pg.message.RecordUpdated
 import eu.kueue.example.pg.pgPool
 import eu.kueue.pg.vertx.PgProducer
 import eu.kueue.send
@@ -50,19 +52,22 @@ class CommandProducer : CliktCommand(
     private suspend fun sendData() = withContext(dispatcher) {
         repeat(amount) {
             async(dispatcher) {
-                val message = listOf(
-                    RecordCreated(
+                val (topic, message) = listOf(
+                    DEFAULT_TOPIC to RecordCreated(
                         id = it,
                         title = "test title $it",
                     ),
-                    TestMessage(
+                    DEFAULT_TOPIC to RecordUpdated(
                         id = it,
                         title = "test title $it",
-                    )
+                    ),
+                    INDEX_TOPIC to IndexRecord(
+                        id = it
+                    ),
                 ).random()
 
                 producer.send(
-                    topic = DEFAULT_TOPIC,
+                    topic = topic,
                     message = message,
                 ).also {
                     logger.info { "send $message" }

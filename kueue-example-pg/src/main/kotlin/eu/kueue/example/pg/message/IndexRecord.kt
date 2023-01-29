@@ -4,13 +4,6 @@ import eu.kueue.Message
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RecordCreated(
+data class IndexRecord(
     val id: Int,
-    val title: String,
-) : Message
-
-@Serializable
-data class RecordUpdated(
-    val id: Int,
-    val title: String,
 ) : Message
