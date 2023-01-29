@@ -1,14 +1,17 @@
 package eu.kueue.example.pg.integration
 
+import eu.kueue.*
 import eu.kueue.example.pg.kotlinXSerializer
-import eu.kueue.example.pg.message.TestMessage
+import eu.kueue.example.pg.message.RecordUpdated
+import eu.kueue.pg.vertx.PgConsumer
 import eu.kueue.pg.vertx.PgProducer
-import eu.kueue.send
 import io.vertx.pgclient.PgConnectOptions
 import io.vertx.pgclient.PgPool
 import io.vertx.sqlclient.PoolOptions
 import kotlinx.coroutines.runBlocking
+import mu.KotlinLogging
 import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.testcontainers.containers.BindMode
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
@@ -28,6 +31,8 @@ private fun postgresContainer(options: GenericContainer<*>.() -> Unit) =
         DockerImageName
             .parse("postgres:15-alpine")
     ).apply(options)
+
+private val logger = KotlinLogging.logger { }
 
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
@@ -68,14 +73,21 @@ class IntegrationTest {
         )
     }
 
+    private val messageCount = 10
+
+    private val consumer = PgConsumer(
+        client = pool,
+        serializer = kotlinXSerializer(),
+    )
+
+    private val listener = CountListener(
+        consumer = consumer,
+        stopOnCount = messageCount,
+    )
+
     @Test
     @Order(1)
     fun `test producer send`() = runBlocking {
-        val message = TestMessage(
-            id = 1,
-            title = "test"
-        )
-
         val producer =
             PgProducer(
                 client = pool,
@@ -83,7 +95,41 @@ class IntegrationTest {
             )
 
         assertDoesNotThrow {
-            producer.send(TOPIC, message)
+            repeat(messageCount) {
+                val message = RecordUpdated(
+                    id = it,
+                    title = "test"
+                )
+                producer.send(TOPIC, message)
+            }
+        }
+    }
+
+    @Test
+    @Order(2)
+    fun `test consumer receive`() = runBlocking {
+        consumer.subscribe<Message>(
+            topic = TOPIC,
+            batchSize = 8,
+            listeners = listOf(listener)
+        )
+        consumer.start()
+        assertEquals(messageCount, listener.totalReceived)
+    }
+
+    class CountListener(
+        private val consumer: Consumer,
+        private val stopOnCount: Int,
+    ) : EventListener {
+        var totalReceived = 0
+
+        @EventHandler
+        suspend fun on(event: RecordUpdated) {
+            totalReceived++
+            logger.info { "recevied $event" }
+            if (totalReceived == stopOnCount) {
+                consumer.stop()
+            }
         }
     }
 }

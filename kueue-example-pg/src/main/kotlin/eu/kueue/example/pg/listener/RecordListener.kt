@@ -3,15 +3,15 @@ package eu.kueue.example.pg.listener
 import eu.kueue.EventHandler
 import eu.kueue.EventListener
 import eu.kueue.example.pg.message.RecordCreated
-import eu.kueue.example.pg.message.TestMessage
+import eu.kueue.example.pg.message.RecordUpdated
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger { }
 
-class TestListener : EventListener {
+class RecordListener : EventListener {
 
     @EventHandler
-    fun on(event: TestMessage) {
+    fun on(event: RecordUpdated) {
         logger.info { "handle test $event" }
     }
 
