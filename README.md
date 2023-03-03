@@ -1,7 +1,8 @@
 # Kueue
 
 ## tl:dr;
-Kueue is a persistent job queue in Kotlin to offload tasks to be processed in the background
+Kueue is a persistent job queue in Kotlin to offload tasks to be processed in the background,
+with at-least-once delivery.
 
 ## Quick start
 
@@ -111,6 +112,15 @@ Consume messages in a different process
 ./kueue-example-pg/run consumer
 ```
 
+### Serializers
+
+It's possible to run the example with a different serializer with the serializer option.
+
+```shell
+./kueue-example-pg/run producer --amount=100 --serializer=XSTREAM
+./kueue-example-pg/run consumer --serializer=XSTREAM
+```
+
 ## Development
 
 Set the correct java version with [sdk](https://sdkman.io/)
@@ -146,5 +156,5 @@ Run all tests & formatting rules
 Check for dependency updates
 
 ```shell
-./gradlew dependencyUpdates`
+./gradlew dependencyUpdates
 ```
