@@ -1,8 +1,9 @@
 package eu.kueue.example.pg.integration
 
 import eu.kueue.*
-import eu.kueue.example.pg.kotlinXSerializer
+import eu.kueue.example.pg.SerializerType
 import eu.kueue.example.pg.message.RecordUpdated
+import eu.kueue.example.pg.serializer
 import eu.kueue.pg.vertx.PgConsumer
 import eu.kueue.pg.vertx.PgProducer
 import io.vertx.pgclient.PgConnectOptions
@@ -75,9 +76,13 @@ class IntegrationTest {
 
     private val messageCount = 10
 
+    private val serializer = serializer(
+        type = SerializerType.KOTLINX
+    )
+
     private val consumer = PgConsumer(
         client = pool,
-        serializer = kotlinXSerializer(),
+        serializer = serializer,
     )
 
     private val listener = CountListener(
@@ -91,7 +96,7 @@ class IntegrationTest {
         val producer =
             PgProducer(
                 client = pool,
-                serializer = kotlinXSerializer(),
+                serializer = serializer,
             )
 
         assertDoesNotThrow {

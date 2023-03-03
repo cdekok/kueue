@@ -14,6 +14,7 @@ kotlinLogging = "3.0.5"
 logback = "1.4.5"
 junit = "5.9.2"
 uuidCreator = "5.2.0"
+xstream = "1.4.20"
 
 [libraries]
 vertxPg = { module = "io.vertx:vertx-pg-client", version.ref = "vertx" }
@@ -31,6 +32,7 @@ kotlinLogging = { module = "io.github.microutils:kotlin-logging-jvm", version.re
 logback = { module = "ch.qos.logback:logback-classic", version.ref ="logback" }
 junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 uuidCreator = { module = "com.github.f4b6a3:uuid-creator", version.ref = "uuidCreator" }
+xstream = { module = "com.thoughtworks.xstream:xstream", version.ref = "xstream" }
 
 [plugins]
 versions = { id = "com.github.ben-manes.versions", version.ref = "versionsPlugin" }

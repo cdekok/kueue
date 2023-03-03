@@ -1,10 +1,13 @@
 package eu.kueue.example.pg
 
+import com.thoughtworks.xstream.XStream
 import eu.kueue.Message
+import eu.kueue.MessageSerializer
 import eu.kueue.example.pg.message.IndexRecord
 import eu.kueue.example.pg.message.RecordCreated
 import eu.kueue.example.pg.message.RecordUpdated
 import eu.kueue.serializer.kotlinx.KotlinxMessageSerializer
+import eu.kueue.serializer.xstream.XstreamMessageSerializer
 import io.vertx.pgclient.PgConnectOptions
 import io.vertx.pgclient.PgPool
 import io.vertx.sqlclient.PoolOptions
@@ -31,16 +34,35 @@ fun pgPool(): PgPool = PgPool.pool(
     },
 )
 
-fun kotlinXSerializer(): KotlinxMessageSerializer =
-    KotlinxMessageSerializer(
-        Json {
-            classDiscriminator = "type"
-            serializersModule = SerializersModule {
-                polymorphic(Message::class) {
-                    subclass(RecordUpdated::class)
-                    subclass(RecordCreated::class)
-                    subclass(IndexRecord::class)
+enum class SerializerType {
+    KOTLINX,
+    XSTREAM,
+}
+
+fun serializer(type: SerializerType): MessageSerializer =
+    when (type) {
+        SerializerType.KOTLINX -> KotlinxMessageSerializer(
+            Json {
+                classDiscriminator = "type"
+                serializersModule = SerializersModule {
+                    polymorphic(Message::class) {
+                        subclass(RecordUpdated::class)
+                        subclass(RecordCreated::class)
+                        subclass(IndexRecord::class)
+                    }
                 }
             }
-        }
-    )
+        )
+
+        SerializerType.XSTREAM -> XstreamMessageSerializer(
+            xstream = XStream().apply {
+                allowTypes(
+                    arrayOf(
+                        RecordCreated::class.java,
+                        RecordUpdated::class.java,
+                        IndexRecord::class.java,
+                    )
+                )
+            }
+        )
+    }

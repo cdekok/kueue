@@ -3,15 +3,13 @@ package eu.kueue.example.pg.command
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.int
 import eu.kueue.Producer
-import eu.kueue.example.pg.DEFAULT_TOPIC
-import eu.kueue.example.pg.INDEX_TOPIC
-import eu.kueue.example.pg.kotlinXSerializer
+import eu.kueue.example.pg.*
 import eu.kueue.example.pg.message.IndexRecord
 import eu.kueue.example.pg.message.RecordCreated
 import eu.kueue.example.pg.message.RecordUpdated
-import eu.kueue.example.pg.pgPool
 import eu.kueue.pg.vertx.PgProducer
 import eu.kueue.send
 import kotlinx.coroutines.*
@@ -30,10 +28,16 @@ class CommandProducer : CliktCommand(
         .int()
         .default(10_000)
 
-    private val producer: Producer = PgProducer(
-        client = pgPool(),
-        serializer = kotlinXSerializer(),
-    )
+    private val serializer: SerializerType by option(help = "Serializer type")
+        .enum<SerializerType>()
+        .default(SerializerType.KOTLINX)
+
+    private val producer: Producer by lazy {
+        PgProducer(
+            client = pgPool(),
+            serializer = serializer(serializer),
+        )
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = Dispatchers.Default.limitedParallelism(6)
