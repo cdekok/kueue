@@ -1,11 +1,14 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import io.gitlab.arturbosch.detekt.Detekt
+import java.util.*
 
 
 plugins {
     alias(libs.plugins.kotlin)
     alias(libs.plugins.detekt)
     alias(libs.plugins.versions)
+    alias(libs.plugins.versionCatalogUpdate)
+    alias(libs.plugins.kotlinxSerialization)
 }
 
 allprojects {
@@ -20,7 +23,7 @@ allprojects {
     }
 
     kotlin {
-        jvmToolchain(18)
+        jvmToolchain(21)
     }
 
     dependencies {
@@ -65,8 +68,14 @@ tasks.withType<DependencyUpdatesTask> {
 }
 
 fun isNonStable(version: String): Boolean {
-    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.toUpperCase().contains(it) }
+    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase(Locale.getDefault()).contains(it) }
     val regex = "^[0-9,.v-]+(-r)?$".toRegex()
     val isStable = stableKeyword || regex.matches(version)
     return isStable.not()
+}
+
+versionCatalogUpdate {
+    keep {
+        versions.add("kueue")
+    }
 }

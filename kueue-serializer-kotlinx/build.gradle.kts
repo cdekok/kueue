@@ -6,4 +6,5 @@ dependencies {
     implementation(project(":kueue-core"))
     implementation(libs.kotlinxJson)
     implementation(libs.kotlinxCoroutines)
+    testImplementation(libs.kotlinxJson)
 }

@@ -1,41 +1,43 @@
 [versions]
-kueue = "0.1.0"
-detekt = "1.22.0"
-kotlin = "1.8.10"
-vertx = "4.4.0"
-versionsPlugin = "0.46.0"
-kotlinxSerialization = "1.8.10"
-kotlinxJson = "1.5.0"
-kotlinxCoroutines = "1.6.4"
-testContainers = "1.17.6"
-clikt = "3.5.2"
-scram = "2.1"
+clikt = "5.0.0"
+detekt = "1.23.7"
+junit = "5.11.1"
+kotlin = "2.0.20"
 kotlinLogging = "3.0.5"
-logback = "1.4.5"
-junit = "5.9.2"
-uuidCreator = "5.2.0"
+kotlinxCoroutines = "1.9.0"
+kotlinxJson = "1.7.3"
+kotlinxSerialization = "2.0.20"
+kueue = "0.1.0"
+logback = "1.5.8"
+scram = "2.1"
+testContainers = "1.20.2"
+uuidCreator = "6.0.0"
+versionCatalogUpdate = "0.8.4"
+versionsPlugin = "0.51.0"
+vertx = "4.5.10"
 xstream = "1.4.20"
 
 [libraries]
-vertxPg = { module = "io.vertx:vertx-pg-client", version.ref = "vertx" }
-vertxCoroutines = { module = "io.vertx:vertx-lang-kotlin-coroutines", version.ref = "vertx" }
+clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
+junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+kotlinLogging = { module = "io.github.microutils:kotlin-logging-jvm", version.ref = "kotlinLogging" }
+kotlinReflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlinxCoroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinxCoroutinesTest = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinxJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxJson" }
-kotlinReflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+scram = { module = "com.ongres.scram:client", version.ref = "scram" }
 testContainers = { module = "org.testcontainers:testcontainers", version.ref = "testContainers" }
 testContainersJunit = { module = "org.testcontainers:junit-jupiter", version.ref = "testContainers" }
 testContainersPostgresql = { module = "org.testcontainers:postgresql", version.ref = "testContainers" }
-clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
-scram = { module = "com.ongres.scram:client", version.ref = "scram" }
-kotlinLogging = { module = "io.github.microutils:kotlin-logging-jvm", version.ref = "kotlinLogging" }
-logback = { module = "ch.qos.logback:logback-classic", version.ref ="logback" }
-junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 uuidCreator = { module = "com.github.f4b6a3:uuid-creator", version.ref = "uuidCreator" }
+vertxCoroutines = { module = "io.vertx:vertx-lang-kotlin-coroutines", version.ref = "vertx" }
+vertxPg = { module = "io.vertx:vertx-pg-client", version.ref = "vertx" }
 xstream = { module = "com.thoughtworks.xstream:xstream", version.ref = "xstream" }
 
 [plugins]
-versions = { id = "com.github.ben-manes.versions", version.ref = "versionsPlugin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin = "org.jetbrains.kotlin.jvm:2.0.20"
 kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization" }
+versionCatalogUpdate = { id = "nl.littlerobots.version-catalog-update", version.ref = "versionCatalogUpdate" }
+versions = { id = "com.github.ben-manes.versions", version.ref = "versionsPlugin" }

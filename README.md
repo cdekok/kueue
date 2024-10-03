@@ -158,3 +158,9 @@ Check for dependency updates
 ```shell
 ./gradlew dependencyUpdates
 ```
+
+Update dependencies
+
+```shell
+./gradlew versionCatalogUpdate
+```

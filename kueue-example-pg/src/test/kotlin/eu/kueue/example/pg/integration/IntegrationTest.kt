@@ -6,8 +6,8 @@ import eu.kueue.example.pg.message.RecordUpdated
 import eu.kueue.example.pg.serializer
 import eu.kueue.pg.vertx.PgConsumer
 import eu.kueue.pg.vertx.PgProducer
+import io.vertx.pgclient.PgBuilder
 import io.vertx.pgclient.PgConnectOptions
-import io.vertx.pgclient.PgPool
 import io.vertx.sqlclient.PoolOptions
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
@@ -19,6 +19,7 @@ import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.utility.DockerImageName
+import java.lang.System.getenv
 
 private const val PG_USER = "test"
 private const val PG_PASS = "t3st"
@@ -56,22 +57,23 @@ class IntegrationTest {
     }
 
     private val pool by lazy {
-        val connection = PgConnectOptions().apply {
-            database = PG_NAME
-            user = PG_USER
-            password = PG_PASS
-            host = postgres.host
-            port = postgres.getMappedPort(PG_PORT)
-            reconnectAttempts = 10
-            reconnectInterval = 5000
-        }
-        println(connection.database)
-        PgPool.pool(
-            connection,
-            PoolOptions().apply {
-                maxSize = PG_POOL
-            }
-        )
+        PgBuilder.pool()
+            .connectingTo(
+                PgConnectOptions().apply {
+                    database = PG_NAME
+                    user = PG_USER
+                    password = PG_PASS
+                    host = postgres.host
+                    port = postgres.getMappedPort(PG_PORT)
+                    reconnectAttempts = 10
+                    reconnectInterval = 5000
+                }
+            )
+            .with(
+                PoolOptions().apply {
+                    maxSize = PG_POOL
+                }
+            ).build()
     }
 
     private val messageCount = 10
