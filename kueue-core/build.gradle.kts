@@ -4,4 +4,5 @@ plugins {
 
 dependencies {
     implementation(libs.kotlinReflect)
+    implementation(libs.kotlinxJson)
 }

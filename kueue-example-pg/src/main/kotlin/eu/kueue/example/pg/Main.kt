@@ -2,6 +2,7 @@ package eu.kueue.example.pg
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintHelpMessage
+import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.core.subcommands
 import eu.kueue.example.pg.command.CommandConsumer
 import eu.kueue.example.pg.command.CommandProducer
@@ -13,15 +14,15 @@ fun main(args: Array<String>) = App()
     )
     .main(args)
 
-class App : CliktCommand(
-    name = "Kueue CLI",
-    invokeWithoutSubcommand = true,
-) {
+class App : CliktCommand(name = "Kueue CLI") {
+
+    override val allowMultipleSubcommands: Boolean = true
+
     override fun run() {
-        if (this.currentContext.originalArgv.isEmpty()) {
+        if (this.currentContext.invokedSubcommand == null) {
             throw PrintHelpMessage(
-                command = this,
-                error = false
+                context = this.currentContext,
+                error = false,
             )
         }
     }

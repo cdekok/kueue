@@ -1,6 +1,7 @@
 package eu.kueue.example.pg.command
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.enum
@@ -20,10 +21,10 @@ import kotlin.time.measureTime
 
 private val logger = KotlinLogging.logger { }
 
-class CommandProducer : CliktCommand(
-    name = "producer",
-    help = "Publish test messages"
-) {
+class CommandProducer : CliktCommand(name = "producer") {
+
+    override fun help(context: Context): String = "Publish test messages"
+
     private val amount: Int by option(help = "Number of messages to add")
         .int()
         .default(10_000)

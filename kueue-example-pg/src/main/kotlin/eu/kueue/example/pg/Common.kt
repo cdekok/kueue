@@ -8,8 +8,9 @@ import eu.kueue.example.pg.message.RecordCreated
 import eu.kueue.example.pg.message.RecordUpdated
 import eu.kueue.serializer.kotlinx.KotlinxMessageSerializer
 import eu.kueue.serializer.xstream.XstreamMessageSerializer
+import io.vertx.pgclient.PgBuilder
 import io.vertx.pgclient.PgConnectOptions
-import io.vertx.pgclient.PgPool
+import io.vertx.sqlclient.Pool
 import io.vertx.sqlclient.PoolOptions
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
@@ -20,19 +21,22 @@ import java.lang.System.getenv
 const val DEFAULT_TOPIC = "system"
 const val INDEX_TOPIC = "index"
 
-fun pgPool(): PgPool = PgPool.pool(
-    PgConnectOptions().apply {
-        database = getenv("PG_NAME")
-        user = getenv("PG_USER")
-        password = getenv("PG_PASS")
-        port = getenv("PG_PORT")?.toInt() ?: 5432
-        reconnectAttempts = 10
-        reconnectInterval = 5000
-    },
-    PoolOptions().apply {
-        maxSize = getenv("PG_POOL").toInt()
-    },
-)
+fun pgPool(): Pool = PgBuilder.pool()
+    .connectingTo(
+        PgConnectOptions().apply {
+            database = getenv("PG_NAME")
+            user = getenv("PG_USER")
+            password = getenv("PG_PASS")
+            port = getenv("PG_PORT")?.toInt() ?: 5432
+            reconnectAttempts = 10
+            reconnectInterval = 5000
+        }
+    )
+    .with(
+        PoolOptions().apply {
+            maxSize = getenv("PG_POOL").toInt()
+        }
+    ).build()
 
 enum class SerializerType {
     KOTLINX,

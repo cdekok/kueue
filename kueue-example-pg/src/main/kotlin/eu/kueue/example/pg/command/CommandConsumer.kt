@@ -1,6 +1,7 @@
 package eu.kueue.example.pg.command
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.enum
@@ -15,10 +16,10 @@ import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger { }
 
-class CommandConsumer : CliktCommand(
-    name = "consumer",
-    help = "Consume messages"
-) {
+class CommandConsumer : CliktCommand(name = "consumer") {
+
+    override fun help(context: Context): String = "Consume messages"
+
     private val serializer: SerializerType by option(help = "Serializer type")
         .enum<SerializerType>()
         .default(SerializerType.KOTLINX)

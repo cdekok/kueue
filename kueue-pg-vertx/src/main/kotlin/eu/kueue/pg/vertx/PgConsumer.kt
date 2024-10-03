@@ -2,8 +2,8 @@ package eu.kueue.pg.vertx
 
 import eu.kueue.*
 import eu.kueue.retry.TimeoutRetryStrategy
-import io.vertx.kotlin.coroutines.await
-import io.vertx.pgclient.PgPool
+import io.vertx.kotlin.coroutines.coAwait
+import io.vertx.sqlclient.Pool
 import io.vertx.sqlclient.Row
 import io.vertx.sqlclient.RowSet
 import io.vertx.sqlclient.SqlConnection
@@ -20,7 +20,7 @@ import kotlin.time.Duration.Companion.seconds
 private val logger = KotlinLogging.logger { }
 
 class PgConsumer(
-    private val client: PgPool,
+    private val client: Pool,
     private val serializer: MessageSerializer,
     limitedParallelism: Int = 4,
     private val pollRetryDelay: Duration = 5.seconds,
@@ -125,8 +125,7 @@ class PgConsumer(
         return client
             .transaction {
                 preparedQuery(query).execute(params)
-            }
-            .await()
+            }.coAwait()
     }
 }
 
@@ -137,13 +136,13 @@ private data class Subscription<T : Message>(
     val clazz: KClass<T>,
 )
 
-private suspend fun <R> PgPool.transaction(code: suspend SqlConnection.() -> R): R {
-    val connection = connection.await()
-    val transaction = connection.begin().await()
+private suspend fun <R> Pool.transaction(code: suspend SqlConnection.() -> R): R {
+    val connection = connection.coAwait()
+    val transaction = connection.begin().coAwait()
 
     return try {
         code(connection).also {
-            transaction.commit().await()
+            transaction.commit().coAwait()
         }
     } finally {
         connection.close()
