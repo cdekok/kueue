@@ -40,10 +40,8 @@ class CommandProducer : CliktCommand(name = "producer") {
         )
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = Dispatchers.Default.limitedParallelism(6)
 
-    @OptIn(ExperimentalTime::class)
     override fun run() =
         runBlocking {
             val duration = measureTime {
@@ -55,8 +53,9 @@ class CommandProducer : CliktCommand(name = "producer") {
         }
 
     private suspend fun sendData() = withContext(dispatcher) {
+        val jobs = mutableListOf<Job>()
         repeat(amount) {
-            async(dispatcher) {
+            launch(dispatcher) {
                 val (topic, message) = listOf(
                     DEFAULT_TOPIC to RecordCreated(
                         id = it,
@@ -77,7 +76,8 @@ class CommandProducer : CliktCommand(name = "producer") {
                 ).also {
                     logger.info { "send $message" }
                 }
-            }
+            }.also { jobs.add(it) }
         }
+        jobs.joinAll()
     }
 }
