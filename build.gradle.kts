@@ -57,6 +57,9 @@ allprojects {
     }
 
     tasks.test {
+        dependencies {
+            testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+        }
         useJUnitPlatform()
     }
 }
