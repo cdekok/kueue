@@ -5,6 +5,7 @@ import eu.kueue.Message
 import eu.kueue.MessageSerializer
 import eu.kueue.Producer
 import io.vertx.kotlin.coroutines.await
+import io.vertx.kotlin.coroutines.coAwait
 import io.vertx.sqlclient.SqlClient
 import io.vertx.sqlclient.Tuple
 import java.time.Instant
@@ -34,7 +35,7 @@ class PgProducer(
             created.toOffsetDateTime(),
         )
 
-        client.preparedQuery(sql).execute(data).await()
+        client.preparedQuery(sql).execute(data).coAwait()
     }
 }
 
