@@ -133,7 +133,7 @@ class IntegrationTest {
         @EventHandler
         suspend fun on(event: RecordUpdated) {
             totalReceived++
-            logger.info { "recevied $event" }
+            logger.info { "received $event" }
             if (totalReceived == stopOnCount) {
                 consumer.stop()
             }
