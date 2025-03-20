@@ -2,7 +2,6 @@
 
 package eu.kueue.retry
 
-import eu.kueue.MessageProcessor
 import eu.kueue.RetryPredicate
 import eu.kueue.RetryStrategy
 import kotlinx.coroutines.delay
@@ -17,41 +16,45 @@ class TimeoutRetryStrategy<T>(
     private val retries: Int = 5,
     private val timeout: Duration = 5.seconds,
 ) : RetryStrategy<T> {
-    override suspend fun runWithRetry(message: T, processMessage: MessageProcessor<T>) = retryWithTimeOut(
+    override suspend fun runWithRetry(action: suspend () -> T) = retryWithTimeOut(
         predicate = predicate,
         retries = retries,
         timeout = timeout,
-        message = message,
     ) {
-        processMessage(message)
+        action()
     }
 }
 
+@Suppress("ThrowsCount")
 suspend inline fun <T> retryWithTimeOut(
     predicate: RetryPredicate = {
         it is Exception
     },
     retries: Int = 5,
     timeout: Duration = 5.seconds,
-    message: T,
-    processor: MessageProcessor<T>,
-) {
+    action: () -> T,
+): Result<T> {
     for (i in 0..retries) {
         return try {
-            processor(message)
+            runCatching {
+                action()
+            }.onFailure {
+                throw it
+            }
         } catch (e: Throwable) {
             when {
                 !predicate(e) -> throw e
                 i < retries -> {
                     val logger = KotlinLogging.logger { }
-                    logger.error(e) { "retry attempt $i wait $timeout : $message" }
+                    logger.error(e) { "retry attempt $i wait $timeout" }
                     delay(timeout)
 
                     continue
                 }
 
-                else -> Unit
+                else -> Result.failure(e)
             }
         }
     }
+    error("Retry failure")
 }

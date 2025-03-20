@@ -8,10 +8,7 @@ import io.vertx.sqlclient.Row
 import io.vertx.sqlclient.RowSet
 import io.vertx.sqlclient.SqlConnection
 import io.vertx.sqlclient.Tuple
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import mu.KotlinLogging
 import kotlin.reflect.KClass
 import kotlin.time.Duration
@@ -24,7 +21,7 @@ class PgConsumer(
     private val serializer: MessageSerializer,
     limitedParallelism: Int = 4,
     private val pollRetryDelay: Duration = 5.seconds,
-    private val retryStrategy: RetryStrategy<Message> = TimeoutRetryStrategy(),
+    private val retryStrategy: RetryStrategy<Unit> = TimeoutRetryStrategy(),
 ) : Consumer {
 
     @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
@@ -89,20 +86,46 @@ class PgConsumer(
                     if (jobs.isEmpty()) {
                         hasJobs = false
                     } else {
-                        jobs.forEach { message ->
-                            subscription.listeners.forEach { callable ->
-                                if (callable.firstArgumentType == message::class) {
-                                    retryStrategy.runWithRetry(
-                                        message,
-                                        callable::processMessage,
-                                    )
-                                }
-                            }
-                        }
+                        runJobsWithRetry(subscription, jobs)
                     }
                 }
             }
         } while (hasJobs)
+    }
+
+    private suspend fun <T: Message> runJobsWithRetry(
+        subscription: Subscription<T>,
+        jobs: List<T>,
+    ) {
+        val (batchListener, listener) = subscription.listeners.partition {
+            it.firstParameter.isList()
+        }
+
+        // handle batch jobs
+        batchListener.forEach { batch ->
+            val type = batch.firstParameter.listType()
+            val batchJobs = jobs.filter { type == it::class }
+            if (batchJobs.isNotEmpty()) {
+                retryStrategy.runWithRetry {
+                    batch::processMessages.invoke(batchJobs)
+                }.onFailure {
+                    logger.error(it) { "failed to process batch job" }
+                }
+            }
+        }
+
+        // handle single message processor
+        jobs.forEach { message ->
+            listener.forEach { callable ->
+                if (callable.firstParameter.type() == message::class) {
+                    retryStrategy.runWithRetry {
+                        callable::processMessage.invoke(message)
+                    }.onFailure {
+                        logger.error(it) { "failed to process message" }
+                    }
+                }
+            }
+        }
     }
 
     private suspend fun pickJobs(

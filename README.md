@@ -61,15 +61,34 @@ producer.send(
 Setup a listener to process the events
 
 ```kotlin
+/**
+ * Process messages one by one
+ */
 class TestListener : EventListener {
+    @EventHandler
+    fun on(event: RecordCreated) {
+        logger.info { "handle record created $event" }
+    }
+
     @EventHandler
     fun on(event: RecordCreated) {
         logger.info { "handle record created $event" }
     }
 }
 
+/**
+ * Batch process messages
+ */
+class BatchListener : EventListener {
+    @EventHandler
+    fun on(event: List<RecordCreated>) {
+        logger.info { "handle record created ${event.size}" }
+    }
+}
+
 val listeners = listOf(
-    TestListener()
+    TestListener(),
+    BatchListener(),
 )
 
 val consumer = PgConsumer(

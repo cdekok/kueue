@@ -28,5 +28,4 @@ suspend inline fun <reified T : Message> Consumer.subscribe(
     topic: String,
     batchSize: Int,
     listeners: List<EventListener>,
-) =
-    subscribe(topic, batchSize, listeners, T::class)
+) = subscribe(topic, batchSize, listeners, T::class)

@@ -30,6 +30,7 @@ allprojects {
         val detekt = rootProject.libs.versions.detekt.get()
         detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:$detekt")
         implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+        testImplementation(kotlin("test"))
         testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
         testImplementation(rootProject.libs.junit)
     }
