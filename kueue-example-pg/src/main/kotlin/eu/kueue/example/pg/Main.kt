@@ -4,11 +4,13 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintHelpMessage
 import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.core.subcommands
+import eu.kueue.example.pg.command.CommandBenchmark
 import eu.kueue.example.pg.command.CommandConsumer
 import eu.kueue.example.pg.command.CommandProducer
 
 fun main(args: Array<String>) = App()
     .subcommands(
+        CommandBenchmark(),
         CommandProducer(),
         CommandConsumer(),
     )

@@ -8,8 +8,12 @@ import mu.KotlinLogging
 private val logger = KotlinLogging.logger { }
 
 class IndexListener : EventListener {
+
+    var processed = 0
+
     @EventHandler
     fun on(event: IndexRecord) {
         logger.info { "handle index record $event" }
+        processed++
     }
 }

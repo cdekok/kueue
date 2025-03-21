@@ -138,19 +138,17 @@ class IntegrationTest {
             serializer = serializer,
         )
 
-        assertDoesNotThrow {
-            repeat(sendMessageCount) {
-                val message = RecordCreated(
-                    id = it,
-                    title = "test $sendMessageCount"
-                )
-                producer.send(TOPIC, message)
-            }
+        repeat(sendMessageCount) {
+            val message = RecordCreated(
+                id = it,
+                title = "test $sendMessageCount"
+            )
+            producer.send(TOPIC, message)
         }
 
         val listener = CountListener(
             consumer = consumer,
-            stopOnCount = messageCount,
+            stopOnCount = sendMessageCount,
         )
         consumer.subscribe<Message>(
             topic = TOPIC,
@@ -195,7 +193,7 @@ class IntegrationTest {
 suspend fun consumeWithTimeout(
     consumer: Consumer,
     timeout: Duration = 15.seconds,
-    block: suspend () -> Unit
+    block: suspend () -> Unit,
 ) =
     try {
         withTimeout(timeout) {
