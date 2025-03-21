@@ -90,7 +90,7 @@ class PgConsumer(
                     }
                 }
             }
-        } while (hasJobs)
+        } while (hasJobs && isActive)
     }
 
     private suspend fun <T: Message> runJobsWithRetry(
