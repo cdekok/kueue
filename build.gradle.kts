@@ -17,7 +17,7 @@ allprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "maven-publish")
 
-    group = "eu.kueue"
+    group = "com.github.cdekok.kueue"
     version = rootProject.libs.versions.kueue.get()
 
     repositories {
