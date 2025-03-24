@@ -66,20 +66,17 @@ allprojects {
         useJUnitPlatform()
     }
 
-    // Ensure this block runs after the project is evaluated
-    afterEvaluate {
-        // Only configure publishing for projects with the Kotlin JVM plugin
-        if (plugins.hasPlugin("org.jetbrains.kotlin.jvm")) {
-            publishing {
-                publications {
-                    create<MavenPublication>("maven") {
-                        groupId = project.group.toString()
-                        artifactId = project.name
-                        version = project.version.toString()
+    // Only configure publishing for projects with the Kotlin JVM plugin
+    if (plugins.hasPlugin("org.jetbrains.kotlin.jvm")) {
+        publishing {
+            publications {
+                create<MavenPublication>("maven") {
+                    groupId = project.group.toString()
+                    artifactId = project.name
+                    version = project.version.toString()
 
-                        // Publish the JAR (and dependencies) from the java component
-                        from(components["java"])
-                    }
+                    // Publish the JAR (and dependencies) from the java component
+                    from(components["java"])
                 }
             }
         }
