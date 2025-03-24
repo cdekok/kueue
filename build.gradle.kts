@@ -15,6 +15,7 @@ plugins {
 allprojects {
     apply(plugin = "io.gitlab.arturbosch.detekt")
     apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "maven-publish")
 
     group = "eu.kueue"
     version = rootProject.libs.versions.kueue.get()
@@ -63,6 +64,25 @@ allprojects {
             testRuntimeOnly("org.junit.platform:junit-platform-launcher")
         }
         useJUnitPlatform()
+    }
+
+    // Ensure this block runs after the project is evaluated
+    afterEvaluate {
+        // Only configure publishing for projects with the Kotlin JVM plugin
+        if (plugins.hasPlugin("org.jetbrains.kotlin.jvm")) {
+            publishing {
+                publications {
+                    create<MavenPublication>("maven") {
+                        groupId = project.group.toString()
+                        artifactId = project.name
+                        version = project.version.toString()
+
+                        // Publish the JAR (and dependencies) from the java component
+                        from(components["java"])
+                    }
+                }
+            }
+        }
     }
 }
 
