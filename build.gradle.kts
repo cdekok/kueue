@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.versions)
     alias(libs.plugins.versionCatalogUpdate)
     alias(libs.plugins.kotlinxSerialization)
+    `maven-publish`
 }
 
 allprojects {
