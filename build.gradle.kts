@@ -65,13 +65,21 @@ allprojects {
         useJUnitPlatform()
     }
 
+    val publish = listOf(
+        "kueue-core",
+        "kueue-pg-vertx",
+        "kueue-retry",
+        "kueue-serializer-kotlinx",
+        "kueue-serializer-xstream",
+    )
+
     // Only configure publishing for projects with the Kotlin JVM plugin
-    if (plugins.hasPlugin("org.jetbrains.kotlin.jvm")) {
+    if (publish.contains(name)) {
         publishing {
             publications {
                 create<MavenPublication>("maven") {
                     groupId = project.group.toString()
-                    artifactId = project.name
+                    artifactId = name
                     version = project.version.toString()
 
                     // Publish the JAR (and dependencies) from the java component
