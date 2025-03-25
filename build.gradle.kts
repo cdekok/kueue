@@ -15,7 +15,6 @@ plugins {
 allprojects {
     apply(plugin = "io.gitlab.arturbosch.detekt")
     apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "maven-publish")
 
     group = "eu.kueue"
     version = rootProject.libs.versions.kueue.get()
@@ -64,7 +63,9 @@ allprojects {
         }
         useJUnitPlatform()
     }
+}
 
+subprojects {
     val publish = listOf(
         "kueue-core",
         "kueue-pg-vertx",
@@ -75,12 +76,15 @@ allprojects {
 
     // Only configure publishing for projects with the Kotlin JVM plugin
     if (publish.contains(name)) {
+        apply(plugin = "maven-publish")
         publishing {
             publications {
+                group = project.group.toString()
+                version = project.version.toString()
+
                 create<MavenPublication>("maven") {
                     groupId = project.group.toString()
-                    artifactId = name
-                    version = project.version.toString()
+                    artifactId = project.name
 
                     // Publish the JAR (and dependencies) from the java component
                     from(components["java"])
