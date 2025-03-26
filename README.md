@@ -1,8 +1,47 @@
 # Kueue
 
+[![](https://jitpack.io/v/cdekok/kueue.svg)](https://jitpack.io/#cdekok/kueue)
+
 ## tl:dr;
 Kueue is a persistent job queue in Kotlin to offload tasks to be processed in the background,
 with at-least-once delivery.
+
+## Table of contents
+
+<!-- TOC -->
+* [Kueue](#kueue)
+  * [tl:dr;](#tldr)
+  * [Table of contents](#table-of-contents)
+  * [Installation](#installation)
+    * [Gradle](#gradle)
+  * [Quick start](#quick-start)
+    * [Producer](#producer)
+    * [Consumer](#consumer)
+  * [Run the example module](#run-the-example-module)
+    * [Serializers](#serializers)
+  * [Development](#development)
+<!-- TOC -->
+
+## Installation
+
+### Gradle
+
+build.gradle.kts
+
+```kotlin
+// Add jitpack
+repositories {
+    maven { url = uri("https://jitpack.io") }
+}
+
+// Include packages
+dependencies {
+    implementation("com.github.cdekok:kueue-core:0.1.0")
+    implementation("com.github.cdekok:kueue-pg-vertx:0.1.0")
+    implementation("com.github.cdekok:kueue-retry:0.1.0")
+    implementation("com.github.cdekok:kueue-serializer-kotlinx:0.1.0")
+}
+```
 
 ## Quick start
 
